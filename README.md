@@ -32,7 +32,7 @@ pipenv install --ignore-pipfile
 
 TELEGRAM_KEY='your_telegram_key'
 CHAT_ID='your chat_id'
-PEVMAN_KEY='your key' 
+DEVMAN_KEY='your key' 
 ```
 
 ## Запуск программы
