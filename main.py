@@ -28,14 +28,12 @@ def main():
     while True:
 
         try:
-            start_time = time.time()
             server_answer = get_code_review(devman_key=os.getenv('DEVMAN_KEY'), timestamp=timestamp)
 
             if server_answer['status'] == 'timeout':
                 timestamp = server_answer.get('timestamp_to_request')
 
             elif server_answer['status'] == 'found':
-                print(f'time= {time.time() - start_time}')
                 timestamp = server_answer.get('last_attempt_timestamp')
                 last_review = server_answer['new_attempts'][-1]
                 lesson_title = last_review['lesson_title']
