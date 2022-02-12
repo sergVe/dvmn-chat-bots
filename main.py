@@ -2,7 +2,7 @@ import os
 import time
 import requests
 from dotenv import load_dotenv
-from textwrap import dedent
+import json
 from telegram.ext import ExtBot
 
 
@@ -17,7 +17,7 @@ def get_code_review(devman_key, timestamp):
     }
     response = requests.get(url, headers=headers, params=query_params)
     response.raise_for_status()
-    return response.json()
+    return json.loads(response.text)
 
 
 def main():
@@ -38,12 +38,9 @@ def main():
                 review_answer = 'К сожалению, в работе нашлись ошибки' if last_review['is_negative'] \
                     else 'Преподавателю всё понравилось, можете приступать к следующему уроку'
                 lesson_url = last_review['lesson_url']
-                message_text = f'''\
-                У Вас проверили работу "{lesson_title}"
-                {review_answer}
-                Ссылка на урок: {lesson_url}
-                '''
-                bot.send_message(chat_id=os.getenv('CHAT_ID'), text=dedent(message_text))
+                bot.send_message(chat_id=os.getenv('CHAT_ID'), text=f'У Вас проверили работу "{lesson_title}"\n'
+                                                                    f'{review_answer}\n'
+                                                                    f'Ссылка на урок: {lesson_url}')
 
         except requests.exceptions.HTTPError as e:
             print(e)
