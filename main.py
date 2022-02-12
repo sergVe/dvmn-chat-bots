@@ -9,7 +9,6 @@ from telegram.ext import ExtBot
 def get_code_review(devman_key, timestamp):
     url = 'https://dvmn.org/api/long_polling/'
     headers = {
-        'User-Agent': 'my-second-bot',
         'Authorization': f'Token {devman_key}'
     }
     query_params = {
