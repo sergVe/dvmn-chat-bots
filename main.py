@@ -14,7 +14,7 @@ def get_code_review(devman_key, timestamp):
     query_params = {
         'timestamp': timestamp
     }
-    response = requests.get(url, headers=headers, params=query_params)
+    response = requests.get(url, headers=headers, params=query_params, timeout=5)
     response.raise_for_status()
 
     return response.json()
@@ -30,9 +30,11 @@ def main():
         try:
             server_answer = get_code_review(devman_key=os.getenv('DEVMAN_KEY'), timestamp=timestamp)
             print(server_answer)
-            timestamp = server_answer.get('timestamp_to_request', None)
+            if server_answer['status'] == 'timeout':
+                timestamp = server_answer.get('timestamp_to_request')
 
-            if not timestamp:
+            elif server_answer['status'] == 'found':
+                timestamp = server_answer.get('last_attempt_timestamp')
                 last_review = server_answer['new_attempts'][-1]
                 lesson_title = last_review['lesson_title']
                 review_answer = 'К сожалению, в работе нашлись ошибки' if last_review['is_negative'] \
