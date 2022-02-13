@@ -23,11 +23,11 @@ def get_code_review(devman_key, timestamp):
 def main():
     # load_dotenv()
     timestamp = None
-    bot = ExtBot(token=os.environ('TELEGRAM_KEY'))
+    bot = ExtBot(token=os.environ['TELEGRAM_KEY'])
     while True:
 
         try:
-            server_answer = get_code_review(devman_key=os.environ('DEVMAN_KEY'), timestamp=timestamp)
+            server_answer = get_code_review(devman_key=os.environ['DEVMAN_KEY'], timestamp=timestamp)
 
             if server_answer['status'] == 'timeout':
                 timestamp = server_answer.get('timestamp_to_request')
@@ -44,7 +44,7 @@ def main():
                 {review_answer}
                 Ссылка на урок: {lesson_url}'''
 
-                bot.send_message(chat_id=os.getenv('CHAT_ID'), text=dedent(message_text))
+                bot.send_message(chat_id=os.environ['CHAT_ID'], text=dedent(message_text))
 
         except requests.exceptions.HTTPError as e:
             print(e)
