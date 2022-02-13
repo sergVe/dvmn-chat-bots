@@ -1,8 +1,7 @@
 import os
-import time
 import requests
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from textwrap import dedent
 from telegram.ext import ExtBot
 
@@ -22,13 +21,13 @@ def get_code_review(devman_key, timestamp):
 
 
 def main():
-    load_dotenv()
+    # load_dotenv()
     timestamp = None
-    bot = ExtBot(token=os.getenv('TELEGRAM_KEY'))
+    bot = ExtBot(token=os.environ('TELEGRAM_KEY'))
     while True:
 
         try:
-            server_answer = get_code_review(devman_key=os.getenv('DEVMAN_KEY'), timestamp=timestamp)
+            server_answer = get_code_review(devman_key=os.environ('DEVMAN_KEY'), timestamp=timestamp)
 
             if server_answer['status'] == 'timeout':
                 timestamp = server_answer.get('timestamp_to_request')
