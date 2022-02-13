@@ -1,1 +1,1 @@
-chat-bot-serge: python3 main.py
+web: python3 main.py
