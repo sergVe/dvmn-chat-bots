@@ -4,6 +4,7 @@ import requests
 # from dotenv import load_dotenv
 from textwrap import dedent
 from telegram.ext import ExtBot
+from logging_settings.streaming_settings import streaming_logger
 
 
 def get_code_review(devman_key, timestamp):
@@ -22,13 +23,15 @@ def get_code_review(devman_key, timestamp):
 
 def main():
     # load_dotenv()
+
+    streaming_logger.warning('бот запущен')
     timestamp = None
     bot = ExtBot(token=os.environ['TELEGRAM_KEY'])
     while True:
 
         try:
             server_answer = get_code_review(devman_key=os.environ['DEVMAN_KEY'], timestamp=timestamp)
-
+            # print(server_answer)
             if server_answer['status'] == 'timeout':
                 timestamp = server_answer.get('timestamp_to_request')
 
