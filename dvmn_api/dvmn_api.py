@@ -1,6 +1,11 @@
 import os
+from textwrap import dedent
+
 import requests
 from tg_bot.reviewer_bot import ReviewerBot
+import traceback
+
+from utils.logging_util import get_error_msg
 
 
 class DevmanAPI:
@@ -32,7 +37,7 @@ class DevmanAPI:
 
     def execute(self):
         server_answer = self.get_code_review(devman_key=DevmanAPI.devman_key, timestamp=self.timestamp)
-        # print(server_answer)
+
         if server_answer['status'] == 'timeout':
             self.timestamp = server_answer.get('timestamp_to_request')
 
@@ -53,11 +58,19 @@ class DevmanAPI:
         self.tg_bot.run()
         while True:
             try:
+                a = 1 / 0
                 self.execute()
+            except ZeroDivisionError as e:
+                self.tg_bot.send_message('Бот упал с ошибкой')
+                self.tg_bot.send_message(dedent(get_error_msg(e)))
+                return
             except requests.exceptions.HTTPError as e:
-                print(e)
+                self.tg_bot.send_message('Бот упал с ошибкой')
+                self.tg_bot.send_message(dedent(get_error_msg(e)))
                 return
             except requests.exceptions.ReadTimeout as e:
-                print(e)
+                self.tg_bot.send_message('Бот упал с ошибкой')
+                self.tg_bot.send_message(dedent(get_error_msg(e)))
             except requests.exceptions.ConnectionError as e:
-                print(e)
+                self.tg_bot.send_message('Бот упал с ошибкой')
+                self.tg_bot.send_message(dedent(get_error_msg(e)))
