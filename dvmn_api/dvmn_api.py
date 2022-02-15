@@ -1,10 +1,8 @@
 import os
 from textwrap import dedent
-
 import requests
-from tg_bot.reviewer_bot import ReviewerBot
-import traceback
 
+from tg_bot.reviewer_bot import ReviewerBot
 from utils.logging_util import get_error_msg
 
 
@@ -57,20 +55,17 @@ class DevmanAPI:
     def run(self):
         self.tg_bot.run()
         while True:
+            e = None
             try:
                 a = 1 / 0
                 self.execute()
-            except ZeroDivisionError as e:
+            except (ZeroDivisionError,
+                    requests.exceptions.HTTPError,
+                    requests.exceptions.ReadTimeout,
+                    requests.exceptions.ConnectionError
+                    ) as e:
+
                 self.tg_bot.send_message('Бот упал с ошибкой')
                 self.tg_bot.send_message(dedent(get_error_msg(e)))
-                return
-            except requests.exceptions.HTTPError as e:
-                self.tg_bot.send_message('Бот упал с ошибкой')
-                self.tg_bot.send_message(dedent(get_error_msg(e)))
-                return
-            except requests.exceptions.ReadTimeout as e:
-                self.tg_bot.send_message('Бот упал с ошибкой')
-                self.tg_bot.send_message(dedent(get_error_msg(e)))
-            except requests.exceptions.ConnectionError as e:
-                self.tg_bot.send_message('Бот упал с ошибкой')
-                self.tg_bot.send_message(dedent(get_error_msg(e)))
+                if isinstance(e, (ZeroDivisionError, requests.exceptions.HTTPError)):
+                    return
