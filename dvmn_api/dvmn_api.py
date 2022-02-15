@@ -55,9 +55,7 @@ class DevmanAPI:
     def run(self):
         self.tg_bot.run()
         while True:
-            e = None
             try:
-                a = 1 / 0
                 self.execute()
             except (ZeroDivisionError,
                     requests.exceptions.HTTPError,
