@@ -17,9 +17,9 @@ class ReviewerBot:
 
     def run(self):
         self.dispatcher.add_error_handler(self.error_handler)
-
-        self.updater.start_polling()
         self.send_message('Бот стартовал')
+        self.updater.start_polling()
+
         self.updater.idle()
 
     def error_handler(self, update: Update, context: CallbackContext):
