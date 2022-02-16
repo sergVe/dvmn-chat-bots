@@ -1,3 +1,4 @@
+import logging
 import os
 from textwrap import dedent
 import requests
@@ -50,6 +51,7 @@ class DevmanAPI:
                 У Вас проверили работу "{lesson_title}"
                 {review_answer}
                 Ссылка на урок: {lesson_url}'''
+            logging.warning('timestamp =', self.timestamp)
             self.tg_bot.send_message(message_text)
 
     def run(self):
