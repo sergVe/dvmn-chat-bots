@@ -2,22 +2,24 @@ import os
 from textwrap import dedent
 import requests
 
+from dotenv import load_dotenv
 from tg_bot.reviewer_bot import ReviewerBot
 from utils.logging_util import get_error_msg
 
 
 class DevmanAPI:
-    devman_key = os.environ['DEVMAN_KEY']
     timeout = 100
 
     def __init__(self):
+        load_dotenv()
         self.tg_bot = self.init_bot()
         self.timestamp = None
+        self.devman_key = os.getenv('DEVMAN_KEY')
 
     def init_bot(self):
         return ReviewerBot(
-            bot_token=os.environ['TELEGRAM_KEY'],
-            chat_id=os.environ['CHAT_ID']
+            bot_token=os.getenv('TELEGRAM_KEY'),
+            chat_id=os.getenv('CHAT_ID')
         )
 
     def get_code_review(self, devman_key, timestamp):
@@ -34,7 +36,7 @@ class DevmanAPI:
         return response.json()
 
     def execute(self):
-        server_answer = self.get_code_review(devman_key=DevmanAPI.devman_key, timestamp=self.timestamp)
+        server_answer = self.get_code_review(devman_key=self.devman_key, timestamp=self.timestamp)
 
         if server_answer['status'] == 'timeout':
             self.timestamp = server_answer.get('timestamp_to_request')
