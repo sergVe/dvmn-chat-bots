@@ -1,10 +1,5 @@
-import logging
 import os
-from textwrap import dedent
 import requests
-
-from tg_bot.reviewer_bot import ReviewerBot
-from utils.logging_util import get_error_msg
 
 
 class DevmanAPI:
@@ -12,14 +7,8 @@ class DevmanAPI:
     timeout = 100
 
     def __init__(self):
-        self.tg_bot = self.init_bot()
         self.timestamp = None
-
-    def init_bot(self):
-        return ReviewerBot(
-            bot_token=os.environ['TELEGRAM_KEY'],
-            chat_id=os.environ['CHAT_ID']
-        )
+        self.review_msg = None
 
     def get_code_review(self, devman_key, timestamp):
         url = 'https://dvmn.org/api/long_polling/'
@@ -35,6 +24,7 @@ class DevmanAPI:
         return response.json()
 
     def execute(self):
+        # a = 1 / 0
         server_answer = self.get_code_review(devman_key=DevmanAPI.devman_key, timestamp=self.timestamp)
 
         if server_answer['status'] == 'timeout':
@@ -47,25 +37,8 @@ class DevmanAPI:
             review_answer = 'К сожалению, в работе нашлись ошибки' if last_review['is_negative'] \
                 else 'Преподавателю всё понравилось, можете приступать к следующему уроку'
             lesson_url = last_review['lesson_url']
-            message_text = f'''\
+
+            self.review_msg = f'''\
                 У Вас проверили работу "{lesson_title}"
                 {review_answer}
                 Ссылка на урок: {lesson_url}'''
-            logging.warning('timestamp =', self.timestamp)
-            self.tg_bot.send_message(message_text)
-
-    def run(self):
-        self.tg_bot.run()
-        while True:
-            try:
-                self.execute()
-            except (ZeroDivisionError,
-                    requests.exceptions.HTTPError,
-                    requests.exceptions.ReadTimeout,
-                    requests.exceptions.ConnectionError
-                    ) as e:
-
-                self.tg_bot.send_message('Бот упал с ошибкой')
-                self.tg_bot.send_message(dedent(get_error_msg(e)))
-                if isinstance(e, (ZeroDivisionError, requests.exceptions.HTTPError)):
-                    return

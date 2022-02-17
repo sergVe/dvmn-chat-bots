@@ -1,9 +1,12 @@
-from dvmn_api.dvmn_api import DevmanAPI
+import os
+
+from tg_bot.reviewer_bot import ReviewerBot
 
 
 def main():
-    devman_api = DevmanAPI()
-    devman_api.run()
+    bot = ReviewerBot(os.environ['TELEGRAM_KEY'], os.environ['CHAT_ID'])
+    bot.run()
+
 
 
 if __name__ == '__main__':
