@@ -1,14 +1,16 @@
 import os
 import requests
+from dotenv import load_dotenv
 
 
 class DevmanAPI:
-    devman_key = os.environ['DEVMAN_KEY']
+    devman_key = os.getenv('DEVMAN_KEY')
     timeout = 100
 
     def __init__(self):
         self.timestamp = None
         self.review_msg = None
+        load_dotenv()
 
     def get_code_review(self, devman_key, timestamp):
         url = 'https://dvmn.org/api/long_polling/'
