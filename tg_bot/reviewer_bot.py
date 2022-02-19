@@ -43,7 +43,7 @@ class ReviewerBot:
                 if isinstance(e, (ZeroDivisionError, requests.exceptions.HTTPError)):
                     break
 
-            self.updater.idle()
+        self.updater.idle()
 
     def error_handler(self, update: Update, context: CallbackContext):
         self.logger.error(msg="Exception while handling an update:", exc_info=context.error)

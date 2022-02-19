@@ -1,6 +1,6 @@
 import os
 import requests
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # Эту строчку закомментируйте или удалите для деплоя на Heroku
 
 
 class DevmanAPI:
@@ -10,7 +10,7 @@ class DevmanAPI:
     def __init__(self):
         self.timestamp = None
         self.review_msg = None
-        load_dotenv()
+        load_dotenv()  # Эту строчку закомментируйте или удалите для деплоя на Heroku
 
     def get_code_review(self, devman_key, timestamp):
         url = 'https://dvmn.org/api/long_polling/'
